@@ -63,6 +63,8 @@ class MainActivity : AppCompatActivity() {
                             } else {
                                 "No description"
                             }
+                        binding.tvWindSpeed.text = "Wind Speed: ${it.wind.speed} m/s"
+                        binding.tvHumidity.text = "Humidity: ${it.main.humidity}%"
                     }
                 } else {
                     Toast.makeText(

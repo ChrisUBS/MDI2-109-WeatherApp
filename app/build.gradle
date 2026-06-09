@@ -4,6 +4,13 @@ plugins {
     // Adding it causes "extension already registered" crash at build time
 }
 
+// Secrets Properties
+Properties secretsProperties = new Properties()
+secretsProperties.load(new FileInputStream(rootProject.file("secrets.properties")))
+
+def apiKey = secretsProperties.getProperty("API_KEY")
+def baseUrl = secretsProperties.getProperty("BASE_URL")
+
 android {
     namespace 'com.example.mdi2_109_weatherapp'
 //    compileSdk {
@@ -21,6 +28,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "API_KEY", "\"${apiKey}\""
+        buildConfigField "String", "BASE_URL", "\"${baseUrl}\""
     }
 
     buildTypes {
@@ -36,6 +46,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
         // viewBinding = auto-generates ActivityMainBinding from activity_main.xml
         // Lets you write binding.btnGetWeather instead of findViewById(R.id.btnGetWeather)
     }
