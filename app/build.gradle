@@ -10,6 +10,7 @@ secretsProperties.load(new FileInputStream(rootProject.file("secrets.properties"
 
 def apiKey = secretsProperties.getProperty("API_KEY")
 def baseUrl = secretsProperties.getProperty("BASE_URL")
+def feedbackBaseUrl = secretsProperties.getProperty("FEEDBACK_BASE_URL")
 
 android {
     namespace 'com.example.mdi2_109_weatherapp'
@@ -31,6 +32,7 @@ android {
 
         buildConfigField "String", "API_KEY", "\"${apiKey}\""
         buildConfigField "String", "BASE_URL", "\"${baseUrl}\""
+        buildConfigField "String", "FEEDBACK_BASE_URL", "\"${feedbackBaseUrl}\""
     }
 
     buildTypes {

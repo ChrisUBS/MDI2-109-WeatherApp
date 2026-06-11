@@ -21,4 +21,5 @@ object AppConstants {
     // "imperial" = Fahrenheit, wind in mph
     // "standard" = Kelvin (default if omitted — 300K feels very hot!)
     const val UNITS = "metric"
+    val FEEDBACK_BASE_URL = BuildConfig.FEEDBACK_BASE_URL
 }

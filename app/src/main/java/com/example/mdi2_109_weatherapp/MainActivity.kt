@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private var currentCity: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +26,22 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter a city name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            currentCity = city // save the city before fetching weather
             fetchWeather(city)
+        }
+
+        binding.btnSubmitFeedback.setOnClickListener {
+            if (currentCity.isEmpty()) {
+                Toast.makeText(this, "Please get weather first", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val rating = binding.ratingBar.rating.toInt()
+            val comment = binding.etComment.text.toString().trim()
+            if (comment.isEmpty()) {
+                Toast.makeText(this, "Please enter a comment!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            submitFeedback(currentCity, rating, comment)
         }
     }
 
@@ -82,5 +98,8 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    }
+    private fun submitFeedback(city: String, rating: Int, comment: String) {
+        Toast.makeText(this, "Coming soon - Assignment 3", Toast.LENGTH_SHORT).show()
     }
 }
