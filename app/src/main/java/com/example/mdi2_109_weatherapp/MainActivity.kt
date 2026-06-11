@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.mdi2_109_weatherapp.data.FeedbackRequest
 import com.example.mdi2_109_weatherapp.databinding.ActivityMainBinding
 import com.example.mdi2_109_weatherapp.network.AppConstants
 import com.example.mdi2_109_weatherapp.network.RetrofitClient
@@ -46,17 +47,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchWeather(city: String) {
-        // =======================================================
-        // ASSIGNMENT 1 — Implement this function!
-        // =======================================================
-        // Steps to complete:
-        // 1. Use lifecycleScope.launch { } to start a coroutine
-        // 2. Inside it, use withContext(Dispatchers.IO) { } for the network call
-        // 3. Call RetrofitClient.weatherApiService.getWeather(city, AppConstants.API_KEY, AppConstants.UNITS)
-        // 4. Check if response.isSuccessful
-        // 5. If YES: use response.body() to update binding.tvCity, binding.tvTemperature, binding.tvDescription
-        // 6. If NO: show a Toast "City not found. Check the name and try again."
-        // 7. Wrap everything in try { } catch (e: Exception) { } for network errors
         lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
@@ -74,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                         binding.tvCity.text = "City: ${it.name}"
                         binding.tvTemperature.text = "Temperature: ${it.main.temp}°C"
                         binding.tvDescription.text =
-                            if(it.weather.isNotEmpty()) {
+                            if (it.weather.isNotEmpty()) {
                                 "Description: ${it.weather.firstOrNull()?.description}"
                             } else {
                                 "No description"
@@ -99,7 +89,39 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun submitFeedback(city: String, rating: Int, comment: String) {
-        Toast.makeText(this, "Coming soon - Assignment 3", Toast.LENGTH_SHORT).show()
+        val request = FeedbackRequest(city, rating, comment)
+
+        lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitClient.feedbackApiService.submitFeedback(request)
+                }
+
+                if (response.isSuccessful) {
+                    val feedbackResponse = response.body()
+                    val message = feedbackResponse?.message ?: "Feedback submitted successfully!"
+                    Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+                    // binding.tvFeedbackResult.text = message
+
+                    // Clear fields after success
+                    binding.ratingBar.rating = 0f
+                    binding.etComment.text.clear()
+                } else {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Failed to submit feedback. Error code: ${response.code()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Network error: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 }
