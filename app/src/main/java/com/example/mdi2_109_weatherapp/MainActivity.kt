@@ -1,6 +1,7 @@
 package com.example.mdi2_109_weatherapp
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        RetrofitClient.init(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -49,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     private fun fetchWeather(city: String) {
         lifecycleScope.launch {
             try {
+                binding.progressBar.visibility = View.VISIBLE
                 val response = withContext(Dispatchers.IO) {
                     RetrofitClient.weatherApiService.getWeather(
                         city,
@@ -79,13 +82,14 @@ class MainActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
             } catch (e: Exception) {
                 Toast.makeText(
                     this@MainActivity,
                     "Network error: ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
+            } finally {
+                binding.progressBar.visibility = View.GONE
             }
         }
     }
@@ -95,6 +99,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
+                binding.progressBarFeedback.visibility = View.VISIBLE
                 val response = withContext(Dispatchers.IO) {
                     RetrofitClient.feedbackApiService.submitFeedback(request)
                 }
@@ -121,6 +126,8 @@ class MainActivity : AppCompatActivity() {
                     "Network error: ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
+            } finally {
+                binding.progressBarFeedback.visibility = View.GONE
             }
         }
     }
